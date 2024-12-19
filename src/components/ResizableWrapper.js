@@ -6,7 +6,7 @@ import { useRefresh } from "muuri-react";
 import { ResizableBox } from "react-resizable";
 import { debounce } from "underscore";
 
-export const ResizableWrapper = (Component, options = {}) => {
+const ResizableWrapper = (Component, options = {}) => {
   const WrappedComponent = React.memo(function WrappedComponent(props) {
     const ref = useRef(null);
     const refresh = useRefresh();
@@ -53,3 +53,5 @@ export const ResizableWrapper = (Component, options = {}) => {
   WrappedComponent.displayName = `ResizableWrapper(${Component.displayName || Component.name || 'Component'})`;
   return WrappedComponent;
 };
+
+export default ResizableWrapper;

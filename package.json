@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "muuri": "0.8.0",
-    "muuri-react": "link:..\\muuri-react-resize-origin\\muuri-react",
+    "muuri-react": "link:muuri-react",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",

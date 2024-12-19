@@ -1,8 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MuuriComponent } from "muuri-react";
-import { ResizableWrapper } from "./ResizableWrapper";
+import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import ResizableWrapper from "./ResizableWrapper";
+
+const MuuriComponent = dynamic(
+  () => import('muuri-react').then(mod => ({ default: mod.MuuriComponent })),
+  { ssr: false }
+);
 
 const type_color = {
   Account: "orange",
@@ -26,33 +31,14 @@ const Item = ResizableWrapper(
   {}
 );
 
+const ClientGrid = dynamic(() => import('./ClientGrid'), {
+  ssr: false,
+});
+
 export default function Grid({ items, setItems }) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
-  // Children
-  const children = items.map(({ id, type }) => (
-    <Item
-      key={id}
-      type={type}
-      remove={() => setItems(items.filter((item) => item.id !== id))}
-    />
-  ));
-
   return (
-    <MuuriComponent
-      dragEnabled
-      dragContainer={document.body}
-      dragStartPredicate={{ handle: ".content-header" }}
-    >
-      {children}
-    </MuuriComponent>
+    <div className="grid-wrapper">
+      <ClientGrid items={items} setItems={setItems} />
+    </div>
   );
 }

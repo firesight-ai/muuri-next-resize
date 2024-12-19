@@ -12,8 +12,8 @@ importers:
         specifier: 0.8.0
         version: 0.8.0
       muuri-react:
-        specifier: link:..\muuri-react-resize-origin\muuri-react
-        version: link:../muuri-react-resize-origin/muuri-react
+        specifier: link:muuri-react
+        version: link:muuri-react
       next:
         specifier: 14.0.4
         version: 14.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
