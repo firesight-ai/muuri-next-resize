@@ -3,6 +3,7 @@ import {terser} from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import sucrase from '@rollup/plugin-sucrase';
 import pkg from './package.json';
 
 // Common.
@@ -26,6 +27,23 @@ const getBabelOptions = ({useESModules}) => ({
   plugins: [['@babel/transform-runtime', {useESModules}]],
 });
 
+const plugins = (esm) => [
+  sucrase({
+    exclude: ['node_modules/**'],
+    transforms: ['typescript', 'jsx'],
+  }),
+  babel(getBabelOptions({useESModules: esm})),
+  resolve({
+    extensions,
+    preferBuiltins: false,
+    mainFields: ['module', 'main'],
+  }),
+  commonjs({
+    include: 'node_modules/**',
+    extensions,
+  }),
+];
+
 export default [
   // Universal module definition (UMD) build
   {
@@ -36,15 +54,15 @@ export default [
       name: 'MuuriReact',
       globals: {react: 'React', muuri: 'Muuri'},
       banner,
+      sourcemap: true,
     },
     external: ['react', 'muuri'],
     plugins: [
-      babel(getBabelOptions({useESModules: true})),
-      resolve({extensions}),
-      commonjs({
-        include: 'node_modules/**',
+      ...plugins(true),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        preventAssignment: true,
       }),
-      replace({'process.env.NODE_ENV': JSON.stringify('development')}),
     ],
   },
 
@@ -57,40 +75,43 @@ export default [
       name: 'MuuriReact',
       globals: {react: 'React', muuri: 'Muuri'},
       banner,
+      sourcemap: true,
     },
     external: ['react', 'muuri'],
     plugins: [
-      babel(getBabelOptions({useESModules: true})),
-      resolve({extensions}),
-      commonjs({
-        include: 'node_modules/**',
+      ...plugins(true),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        preventAssignment: true,
       }),
-      replace({'process.env.NODE_ENV': JSON.stringify('production')}),
       terser(),
     ],
   },
 
-  // CommonJS (cjs) build
-  // - All external packages are not bundled
+  // CommonJS build
   {
     input,
-    output: {file: pkg.main, format: 'cjs', banner},
-    external: (id) => !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [
-      resolve({extensions}),
-      babel(getBabelOptions({useESModules: false})),
-    ],
+    output: {
+      file: pkg.main,
+      format: 'cjs',
+      banner,
+      sourcemap: true,
+      exports: 'named',
+    },
+    external: id => !id.startsWith('.') && !id.startsWith('/'),
+    plugins: plugins(false),
   },
 
-  // EcmaScript Module (esm) build
-  // - All external packages are not bundled
+  // ES module build
   {
     input,
-    output: {file: pkg.module, format: 'esm', banner},
-    external: (id) => !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [
-      resolve({extensions}),
-      babel(getBabelOptions({useESModules: true})),
-    ],
+    output: {
+      file: pkg.module,
+      format: 'es',
+      banner,
+      sourcemap: true,
+    },
+    external: id => !id.startsWith('.') && !id.startsWith('/'),
+    plugins: plugins(true),
   },
 ];

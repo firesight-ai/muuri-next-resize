@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import ResizableWrapper from "./ResizableWrapper";
+
+const ResizableWrapper = dynamic(
+  () => import("./ResizableWrapper"),
+  { ssr: false }
+);
 
 const MuuriComponent = dynamic(
   () => import('muuri-react').then(mod => ({ default: mod.MuuriComponent })),
@@ -15,21 +19,25 @@ const type_color = {
   Goals: "green"
 };
 
-// Item component
-const Item = ResizableWrapper(
-  ({ type, remove }) => (
-    <div className={`content ${type_color[type]}`}>
-      <div className="content-header" />
-      <div className="card-text">{type}</div>
-      <div className="card-remove">
-        <i className="material-icons" onMouseDown={remove}>
-          &#xE5CD;
-        </i>
+// Item component will be created after ResizableWrapper is loaded
+const Item = ({ type, remove }) => {
+  const WrappedComponent = ResizableWrapper(
+    ({ type, remove }) => (
+      <div className={`content ${type_color[type]}`}>
+        <div className="content-header" />
+        <div className="card-text">{type}</div>
+        <div className="card-remove">
+          <i className="material-icons" onMouseDown={remove}>
+            &#xE5CD;
+          </i>
+        </div>
       </div>
-    </div>
-  ),
-  {}
-);
+    ),
+    {}
+  );
+
+  return <WrappedComponent type={type} remove={remove} />;
+};
 
 const ClientGrid = dynamic(() => import('./ClientGrid'), {
   ssr: false,

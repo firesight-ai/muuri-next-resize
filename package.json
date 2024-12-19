@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cd muuri-react && rm -rf node_modules && rm -rf dist && pnpm install && pnpm build && cd .. && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -11,10 +11,13 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "declaration": true,
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es5",
     "strict": true,
-    "jsx": "react"
+    "jsx": "react",
+    "skipLibCheck": true,
+    "lib": ["es2015", "dom"],
+    "types": ["node", "react", "prop-types"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]
