@@ -1,0 +1,20 @@
+{
+  "name": "muuri-next-resize",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "muuri": "0.8.0",
+    "muuri-react": "link:..\\muuri-react-resize-origin\\muuri-react",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-resizable": "^3.0.5",
+    "underscore": "^1.13.6"
+  }
+}
