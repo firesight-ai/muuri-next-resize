@@ -2,20 +2,9 @@
 
 import * as React from 'react';
 import { useRef, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { useRefresh } from 'muuri-react';
+import { ResizableBox } from 'react-resizable';
 import { debounce } from "underscore";
-
-// Dynamically import useRefresh from muuri-react
-const useRefresh = dynamic(
-  () => import('muuri-react').then(mod => mod.useRefresh),
-  { ssr: false }
-);
-
-// Dynamically import ResizableBox
-const ResizableBox = dynamic(
-  () => import('react-resizable').then(mod => ({ default: mod.ResizableBox })),
-  { ssr: false }
-);
 
 const ResizableWrapper = (Component, options = {}) => {
   const WrappedComponent = React.memo(function WrappedComponent(props) {
@@ -48,38 +37,23 @@ const ResizableWrapper = (Component, options = {}) => {
     };
 
     if (!isClient) {
-      return (
-        <div
-          ref={ref}
-          className="item"
-          style={{ width: `${width}px`, height: `${height}px` }}
-          data-id={props.id}
-        >
-          <div className="muuri-item">
-            <Component {...props} />
-          </div>
-        </div>
-      );
+      return null;
     }
 
     return (
-      <div
-        ref={ref}
-        className="item"
-        style={{ width: `${width}px`, height: `${height}px` }}
-        data-id={props.id}
+      <ResizableBox
+        width={width}
+        height={height}
+        minConstraints={[width, height]}
+        onResize={handleResize}
       >
-        <div className="muuri-item">
-          <ResizableBox
-            width={width}
-            height={height}
-            minConstraints={[width, height]}
-            onResize={handleResize}
-          >
-            <Component {...props} />
-          </ResizableBox>
+        <div
+          ref={ref}
+          style={{ width: `${width}px`, height: `${height}px` }}
+        >
+          <Component {...props} />
         </div>
-      </div>
+      </ResizableBox>
     );
   });
   

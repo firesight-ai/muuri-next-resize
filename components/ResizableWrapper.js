@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useRef } from 'react';
+import * as React from "react";
+import { useRef } from "react";
 import { useRefresh } from "muuri-react";
 import { ResizableBox } from "react-resizable";
 import { debounce } from "underscore";
@@ -10,15 +10,12 @@ export const ResizableWrapper = (Component, options = {}) => {
   const WrappedComponent = React.memo(function WrappedComponent(props) {
     const ref = useRef(null);
     const refresh = useRefresh();
-    const refreshWithDebounce = debounce(
-      () => {
-        if (refresh) {
-          requestAnimationFrame(refresh);
-        }
-      },
-      50
-    );
-    
+    const refreshWithDebounce = debounce(() => {
+      if (refresh) {
+        requestAnimationFrame(refresh);
+      }
+    }, 50);
+
     const width = options.widthIn || 300;
     const height = options.heightIn || 200;
 
@@ -49,7 +46,9 @@ export const ResizableWrapper = (Component, options = {}) => {
       </div>
     );
   });
-  
-  WrappedComponent.displayName = `ResizableWrapper(${Component.displayName || Component.name || 'Component'})`;
+
+  WrappedComponent.displayName = `ResizableWrapper(${
+    Component.displayName || Component.name || "Component"
+  })`;
   return WrappedComponent;
 };

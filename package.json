@@ -9,9 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "muuri": "0.8.0",
+    "@types/node": "^20.0.0",
+    "muuri": "0.9.5",
     "muuri-react": "link:muuri-react",
-    "next": "14.0.4",
+    "next": "13.4.17",
     "react": "^18",
     "react-dom": "^18",
     "react-resizable": "^3.0.5",
