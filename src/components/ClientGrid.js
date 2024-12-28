@@ -32,7 +32,18 @@ export default function ClientGrid({ items, setItems }) {
 
   useEffect(() => {
     setMounted(true);
-    return () => setMounted(false);
+    // Add a small delay to ensure components are properly rendered
+    const timer = setTimeout(() => {
+      if (gridRef.current) {
+        gridRef.current.refreshItems();
+        gridRef.current.layout(true);
+      }
+    }, 100);
+    
+    return () => {
+      clearTimeout(timer);
+      setMounted(false);
+    };
   }, []);
 
   if (!mounted) return null;
