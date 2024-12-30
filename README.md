@@ -1,2 +1,0 @@
-# muuri-next-resize
-
