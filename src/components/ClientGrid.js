@@ -16,7 +16,7 @@ const BaseContent = ({ type, remove }) => (
     <div className="content-header" />
     <div className="card-text">{type}</div>
     <div className="card-remove">
-      <i className="material-icons" onMouseDown={remove}>
+      <i className="material-icons" onClick={remove}>
         &#xE5CD;
       </i>
     </div>
