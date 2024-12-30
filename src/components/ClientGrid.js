@@ -1,14 +1,8 @@
-'use client';
-
-import { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-const ResizableWrapper = dynamic(
-  () => import("../../components/ResizableWrapper").then(mod => ({ default: mod.ResizableWrapper })),
-  { ssr: false }
-);
-
-const { MuuriComponent } = await import('muuri-react');
+"use client";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
+import { MuuriComponent } from "muuri-react";
+import ResizableWrapper from "./ResizableWrapper";
 
 const type_color = {
   Account: "orange",
@@ -16,18 +10,21 @@ const type_color = {
   Goals: "green"
 };
 
-// Base content component that will be wrapped
+// Base content component
 const BaseContent = ({ type, remove }) => (
   <div className={`content ${type_color[type]}`}>
     <div className="content-header" />
     <div className="card-text">{type}</div>
     <div className="card-remove">
-      <i className="material-icons" onMouseDown={remove}>
+      <i className="material-icons" onClick={remove}>
         &#xE5CD;
       </i>
     </div>
   </div>
 );
+
+// Create the wrapped component once
+const WrappedContent = ResizableWrapper(BaseContent);
 
 export default function ClientGrid({ items, setItems }) {
   const [mounted, setMounted] = useState(false);
@@ -35,7 +32,18 @@ export default function ClientGrid({ items, setItems }) {
 
   useEffect(() => {
     setMounted(true);
-    return () => setMounted(false);
+    // Add a small delay to ensure components are properly rendered
+    const timer = setTimeout(() => {
+      if (gridRef.current) {
+        gridRef.current.refreshItems();
+        gridRef.current.layout(true);
+      }
+    }, 100);
+    
+    return () => {
+      clearTimeout(timer);
+      setMounted(false);
+    };
   }, []);
 
   if (!mounted) return null;
@@ -55,21 +63,27 @@ export default function ClientGrid({ items, setItems }) {
           alignBottom: false,
           rounding: false
         }}
-        propsToData={item => ({ id: item.id })}
       >
-        {items.map(({ id, type }) => {
-          const WrappedContent = ResizableWrapper(BaseContent);
-          return (
-            <div key={id} className="item">
-              <div className="item-content">
+        {items.map(({ id, type }) => (
+          <div key={id} data-item-id={id} className="item">
+            <div
+              className="item-content"
+              style={{ width: "100%", height: "100%" }}
+            >
+              <div
+                className="card"
+                style={{ backgroundColor: type_color[type] }}
+              >
                 <WrappedContent
                   type={type}
-                  remove={() => setItems(items.filter(item => item.id !== id))}
+                  remove={() =>
+                    setItems(items.filter((item) => item.id !== id))
+                  }
                 />
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </MuuriComponent>
     </div>
   );
