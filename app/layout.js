@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Firesight Dynamo UI',
-  description: 'Muuri-based resizable grid layout for Firesight',
+  title: 'muuri-next-resize',
+  description: 'Muuri-based resizable grid layout',
 };
 
 export default function RootLayout({ children }) {

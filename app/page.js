@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <General>
-      <div className="top-bar">Firesight Dynamo UI</div>
+      <div className="top-bar">muuri-next-resize</div>
       <Main>
         <div>
           <div>
